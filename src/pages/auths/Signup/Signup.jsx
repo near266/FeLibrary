@@ -19,6 +19,7 @@ export default function Signup() {
         initialValues: {
             name: "",
             phoneNumber: "",
+            email: "",
             password: "",
             confirmPassword: "",
             role: "user",
@@ -27,6 +28,7 @@ export default function Signup() {
         validationSchema: Yup.object({
             name: Yup.string().max(45, "Tên quá dài!").required("Bạn chưa điền tên!"),
             phoneNumber: Yup.string().matches(phoneRegExp, "Số điện thoại không hợp lệ").required("Bạn chưa nhập số điện thoại"),
+            email: Yup.string().email("Email không đúng").required("Bạn chưa điền email!"),
             password: Yup.string().min(6, "mật khẩu tối thiểu 6 kí tự").required("Bạn chưa nhập mật khẩu"),
             confirmPassword: Yup.string()
                 .oneOf([Yup.ref("password")], "Mật khẩu không khớp")
@@ -81,6 +83,14 @@ export default function Signup() {
                     </label>
                     <input id="phoneNumber" name="phoneNumber" type="text" placeholder="Số điện thoại" value={formik.values.phoneNumber} onChange={formik.handleChange} className={cx("form-control")} />
                     {formik.errors.phoneNumber && formik.touched.phoneNumber && <span className={cx("form-message")}>{formik.errors.phoneNumber}</span>}
+                </div>
+
+                <div className={cx("form-group")}>
+                    <label htmlFor="email" className={cx("form-label")}>
+                        Email<span> *</span>
+                    </label>
+                    <input id="email" name="email" type="text" placeholder="Email" value={formik.values.email} onChange={formik.handleChange} className={cx("form-control")} />
+                    {formik.errors.email && formik.touched.email && <span className={cx("form-message")}>{formik.errors.email}</span>}
                 </div>
 
                 <div className={cx("form-group")}>

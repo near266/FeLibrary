@@ -94,7 +94,7 @@ export default function Login() {
                     <input required id="password" name="password" type="password" placeholder="Mật khẩu" value={formikForm.values.password} onChange={formikForm.handleChange} className={cx("form-control")} />
                     {formikForm.errors.password && formikForm.touched.password && <span className={cx("form-message")}>{formikForm.errors.password}</span>}
                 </div>
-
+                <Link to={"/"} style={{ marginLeft: '0px' }}>Quên mật khẩu?</Link>
                 <button className={cx("form-submit")} type="submit">
                     Đăng nhập
                 </button>

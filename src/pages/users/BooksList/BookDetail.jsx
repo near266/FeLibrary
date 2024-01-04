@@ -72,6 +72,7 @@ export const BookDetail = () => {
         <div className={cx('divRight')}>
           <h3 className={cx("name")}>{book.name}</h3>
           <p className={cx("author")}>Tác giả: {book.author}</p>
+          <p className={cx("category")}>Thể loại: {book.categoryName}</p>
           <p style={{ marginBottom: '30px' }}>Nhà xuất bản: {book.publisher}</p>
           <p className={cx("total")}>Tổng số lượng: {book.quantityTotal}</p>
           <p className={cx("avail")}>Sẵn có để mượn :<span>{book.quantityAvailabel}</span></p>

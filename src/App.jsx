@@ -17,10 +17,8 @@ function App() {
         <div className="App">
             <Routes>
                 {userRoutes.map((route, index) => {
-                    console.log(route);
                     const Page = route.component;
                     let Layout = DefaultLayoutUser;
-                    // let Layout = null;
                     if (route.layout !== null) {
                         Layout = route.layout;
                     }
@@ -45,10 +43,10 @@ function App() {
                 {
                     adminRoutes.map((route, index) => {
                         // Check if there is a token and the role is "admin"
-                        if (!tokenLocal || !role || role !== "admin") {
+                        {/*if (!tokenLocal || !role || role !== "admin") {
                             // Redirect to login if the conditions are not met
                             return null;
-                        }
+                        }*/}
                         const Page = route.component;
                         let Layout = DefaultLayoutAdmin;
                         if (route.layout) {

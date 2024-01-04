@@ -66,19 +66,19 @@ function Sidebar({ setToggleButton }) {
                 value: 0,
                 display: 'block',
             });
-            console.log(setToggleButton());
 
             setToggleButton({
                 action: false,
                 value: 0,
             });
+            console.log("đóng");
         } else {
             setToggle({
                 action: true,
                 value: 178,
                 display: 'none',
             });
-            console.log(setToggleButton());
+            console.log('mở');
             setToggleButton({
                 action: true,
                 value: 178,

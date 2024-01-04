@@ -18,8 +18,8 @@ const BorrowerCard = () => {
 
     const [showModal, setShowModal] = useState(false)
     let phoneNumber = ""
-    if (user) {
-        phoneNumber = user.phoneNumber;
+    if (1) {
+        //phoneNumber = user.phoneNumber;
         useEffect(() => {
             dispatch(fetchBorrowerCard(phoneNumber))
         }, [])
@@ -50,7 +50,8 @@ const BorrowerCard = () => {
     return (
         <div className={cx("wrapper")}>
             <h1>Thẻ đọc</h1>
-            {listBook.length > 0 && token ? (
+            {/*{listBook.length > 0 && token ? (*/}
+            {listBook.length > 0 && 1 ? (
                 <div>
                     <div className={cx('cardListBook')}>
                         {listBook.map((book, index) => (

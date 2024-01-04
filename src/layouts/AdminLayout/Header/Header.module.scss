@@ -20,23 +20,23 @@
     margin: 0;
 }
 
-.group{
+.group {
     height: inherit;
     display: flex;
     align-items: center;
 }
 
-.group .sub{
+.group .sub {
     cursor: pointer;
     height: 100%;
     display: flex;
     padding: 16px 13px;
     align-items: center;
 
-    svg{
-        font-size: 24; 
+    svg {
+        font-size: 24;
         color: A2A8AF;
-        margin-right:  9px;
+        margin-right: 9px;
     }
 
     p {
@@ -47,7 +47,3 @@
         margin-inline-end: 0px;
     }
 }
-
-
-
-
