@@ -36,7 +36,7 @@ const BooksList = () => {
     const books = useSelector(selectAllBooks)
     const [originalProducts, setOriginalProducts] = useState(books);
     const [selectedCategory, setSelectedCategory] = useState("Tất cả");
-    const [wordsToSearch, setWordsToSearch] = useState('')
+    const [keyword, setKeyword] = useState('')
     const [categories, setCategories] = useState([])
     const navigate = useNavigate();
 
@@ -60,9 +60,12 @@ const BooksList = () => {
         setSelectedCategory(event.target.value);
     };
 
+    const handleInputChange = (e) => {
+        setKeyword(e.target.value)
+    }
+
     function handleSearch(e) {
-        const words = e.target.value
-        if (words.trim()) {
+        if (keyword.trim()) {
             dispatch(searchBook(words))
             setWordsToSearch('')
         }
@@ -103,6 +106,7 @@ const BooksList = () => {
                     type="text"
                     className={cx('search-input')}
                     placeholder="Tìm kiếm theo tên sách hoặc tác giả"
+                    onChange={handleInputChange()}
                 />
                 <button className={cx('search-button')} onClick={handleSearch}>Tìm Kiếm</button>
             </div>

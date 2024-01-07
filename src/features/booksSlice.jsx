@@ -6,7 +6,8 @@ const fakeBookData = [
     { bookId: 'L10', categoryName: 'Tản Văn', author: 'Hae Min', name: 'Bước chậm lại giữa thế gian vội vã', quantityTotal: 3, quantityAvailabel: 1, publisher: 'Nhã Nam', coverImg: 'https://salt.tikicdn.com/cache/w1200/ts/product/7a/18/8e/2f70de3ea7eec9c34f55e402254e27ed.jpg' },
     { bookId: 'A1-20', categoryName: 'Tiểu sử - hồi ký', author: 'Phan Việt', name: 'Xuyên Mỹ', quantityTotal: 1, quantityAvailabel: 1, publisher: 'Dân Trí', coverImg: 'https://salt.tikicdn.com/cache/w1200/media/catalog/product/b/a/bat-hanh-la-mot-tai-san-xuyen-my.jpg' },
     { bookId: 'A1-21', categoryName: 'Tiểu sử - hồi ký', author: 'Phan Việt', name: 'Về Nhà', quantityTotal: 1, quantityAvailabel: 0, publisher: 'Nhã Nam', coverImg: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1630678166i/34816365.jpg' },
-    { bookId: 'F1-24', categoryName: 'Kinh dị', author: 'Suzuki Koji', name: 'Vòng xoáy chết', quantityTotal: 3, quantityAvailabel: 2, publisher: 'Nhã Nam', coverImg: 'https://salt.tikicdn.com/cache/w1200/media/catalog/product/v/o/vong-xoay-chet_1.jpg' }
+    { bookId: 'F1-24', categoryName: 'Kinh dị', author: 'Suzuki Koji', name: 'Vòng xoáy chết', quantityTotal: 3, quantityAvailabel: 2, publisher: 'Nhã Nam', coverImg: 'https://salt.tikicdn.com/cache/w1200/media/catalog/product/v/o/vong-xoay-chet_1.jpg' },
+    { bookId: 'F1-25', categoryName: 'Kinh dị', author: 'Suzuki Koji', name: 'Vòng xoáy chết 2', quantityTotal: 3, quantityAvailabel: 2, publisher: 'Nhã Nam', coverImg: 'https://salt.tikicdn.com/cache/w1200/media/catalog/product/v/o/vong-xoay-chet_1.jpg' }
 ]
 
 const fakeBook = [
@@ -39,7 +40,17 @@ export const addNewBook = createAsyncThunk(
 
 export const searchBook = createAsyncThunk(
     'books/searchBook',
-    async nameOrAuthor => {
+    async keyword => {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts')
+        //return response.data
+        console.log(2222)
+        return fakeBook
+    }
+)
+
+export const filterBook = createAsyncThunk(
+    'books/filterBook',
+    async category => {
         const response = await fetch('https://jsonplaceholder.typicode.com/posts')
         //return response.data
         console.log(2222)
@@ -59,6 +70,9 @@ const booksSlice = createSlice({
             })
             .addCase(addNewBook.fulfilled, booksAdapter.addOne)
             .addCase(searchBook.fulfilled, (state, action) => {
+                booksAdapter.updateMany(state, action.payload)
+            })
+            .addCase(filterBook.fulfilled, (state, action) => {
                 booksAdapter.updateMany(state, action.payload)
             })
     }
