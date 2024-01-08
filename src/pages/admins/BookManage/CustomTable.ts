@@ -21,7 +21,7 @@ const customStyles = {
       borderColor: "black",
       paddingLeft: "8px", // override the cell padding for head cells
       paddingRight: "8px",
-      fontWeight: 600,
+      fontWeight: 500,
       fontFamily: "-apple-system,  BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell"
     },
   },

@@ -10,7 +10,7 @@ import { faEdit, faTrashAlt, faSearch } from "@fortawesome/free-solid-svg-icons"
 import { Modal, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import ModalBookDetail from "./ModalBookDetail";
-import { fetchBooks, selectAllBooks, selectBookIds, selectBookById, searchBook } from "../../../features/booksSlice";
+import { fetchBooks, selectAllBooks, selectBookIds, selectBookById, searchBook, deleteBook } from "../../../features/booksSlice";
 
 import { toast, ToastContainer } from "react-toastify";
 
@@ -55,7 +55,7 @@ const BookList = () => {
             wrap: true,
             width: '25%',
             style: {
-                fontWeight: '550',
+                fontWeight: '500',
             }
         },
         {
@@ -86,7 +86,7 @@ const BookList = () => {
         {
             name: "",
             cell: (row) => (<div className={cx('editIcon')}>
-                <Link to={`/`}>
+                <Link to={`/admin/editBook/${row.bookId}`}>
                     <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} />
                 </Link>
             </div>),
@@ -103,6 +103,7 @@ const BookList = () => {
     const books = useSelector(selectAllBooks)
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -131,7 +132,6 @@ const BookList = () => {
         }
         getAllCategory();
         setCategories(fakeCate)
-        console.log(categories)
 
     }, [])
 
@@ -143,7 +143,6 @@ const BookList = () => {
         setSelectedRow(book)
         console.log(book.bookId)
         setShowModal(true)
-
     };
 
     function handleSearch() {
@@ -155,16 +154,21 @@ const BookList = () => {
     };
 
     const handleDelete = () => {
-        console.log("xóa")
+        dispatch(deleteBook(selectedRow.bookId))
+        //console.log("xóa")
+        toast.success('Xóa sách thành công')
+        setShowDeleteModal(false)
+        console.log('BOOK', books)
     }
-    const handleEdit = () => {
-        console.log("edit")
+    const handleEdit = (book) => {
+        console.log(book.bookId)
+        //navigate(`/admin/editBook'/{book.bookId}`)
     }
 
     return (
         <div className={cx("wrap")}>
             <div className={cx("topBar")}>
-                <Link to="/" className={cx("create-btn")}>
+                <Link to="/admin/addBook" className={cx("create-btn")}>
                     Thêm sách
                 </Link>
             </div>

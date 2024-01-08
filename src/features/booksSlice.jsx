@@ -14,6 +14,8 @@ const fakeBook = [
     { bookId: 'NNA003', categoryName: 'Nguyễn Ngọc Ánh', author: 'Nguyễn Ngọc Ánh', name: 'Kính vạn hoa 4', quantityTotal: 2, quantityAvailabel: 2, publisher: 'Kim Đồng', coverImg: 'https://sachtiengviet.com/cdn/shop/products/e22340ac820731a401bd7fac05dcfe9d.jpg?v=1700783823' },
 ]
 
+const data = { data: 1 }
+
 const booksAdapter = createEntityAdapter({
     selectId: book => book.bookId,
 })
@@ -35,6 +37,27 @@ export const addNewBook = createAsyncThunk(
         const response = await fetch('https://jsonplaceholder.typicode.com/posts')
         //return response.data
         return fakeBook
+    }
+)
+
+export const deleteBook = createAsyncThunk(
+    'books/deleteBook',
+    async bookId => {
+        console.log("xóa dp", bookId)
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts')
+        //const res = await request.delete(`book/${bookId}`)
+        //return res.data
+        return bookId
+    }
+)
+
+export const editBook = createAsyncThunk(
+    'book/updateBook',
+    async bookData => {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts')
+        //const res = await request.put(`book/${bookId}`, bookData)
+        //return res.data
+        return bookData
     }
 )
 
@@ -65,7 +88,7 @@ const booksSlice = createSlice({
     extraReducers(builder) {
         builder
             .addCase(fetchBooks.fulfilled, (state, action) => {
-                console.log(action.payload)
+                console.log("get all book")
                 booksAdapter.setAll(state, action.payload)
             })
             .addCase(addNewBook.fulfilled, booksAdapter.addOne)
@@ -75,6 +98,26 @@ const booksSlice = createSlice({
             .addCase(filterBook.fulfilled, (state, action) => {
                 booksAdapter.updateMany(state, action.payload)
             })
+            //.addCase(deleteBook.fulfilled, (state, action) => {
+
+            //    booksAdapter.updateMany(state, action.payload)
+            //})
+            .addCase(editBook.fulfilled, (state, action) => {
+                const updateBook = action.payload;
+                const existingBook = state.entities[updateBook.bookId]
+
+                if (existingBook) {
+                    booksAdapter.updateOne(state, { id: existingBook.id, changes: updateBook })
+                }
+            })
+            .addCase(deleteBook.fulfilled, (state, action) => {
+                const deletedBookId = action.payload.data;
+
+                // Sử dụng `removeOne` để xóa sách từ trạng thái Redux
+                console.log('lỗi ko')
+                booksAdapter.removeOne(state, deletedBookId);
+                console.log(booksAdapter)
+            });
     }
 })
 

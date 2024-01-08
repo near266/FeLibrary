@@ -20,6 +20,8 @@ import OffBorrowerSlip from '../pages/admins/BorrowerSlip/OffBorrowerSlip';
 import BorrowerList from '../pages/admins/BorrowerAcc/BorrowerList';
 import EventList from '../pages/admins/EventManage/EventList';
 import Statistics from '../pages/admins/Statistics/Statistics';
+import AddBookForm from '../pages/admins/BookManage/AddBookForm';
+import EditBookForm from '../pages/admins/BookManage/EditBookForm';
 import DefaultLayout from '../layouts/AdminLayout/DefaultLayout/DefaultLayout';
 import { LibraryAdd } from '@mui/icons-material';
 //import layout
@@ -43,6 +45,8 @@ const adminRoutes = [
     { path: routesConfig.admin, component: BookList, title: 'Quản lý sách' },
     { path: routesConfig.categoryListAdmin, component: BookCategory, title: 'Quản lý thể loại sách' },
     { path: routesConfig.bookListAdmin, component: BookList, title: 'Quản lý sách' },
+    { path: routesConfig.addBookForm, component: AddBookForm, title: 'Thêm sách mới' },
+    { path: routesConfig.editBookForm, component: EditBookForm, title: 'Thêm sách mới' },
     { path: routesConfig.onSlipAdmin, component: OnBorrowerSlip, title: 'Quản lý phiếu mượn sách On' },
     { path: routesConfig.offSlipAdmin, component: OffBorrowerSlip, title: 'Quản lý phiếu mượn sách Off' },
     { path: routesConfig.borrowerListAdmin, component: BorrowerList, title: 'Quản lý tài khoản bạn đọc on' },
