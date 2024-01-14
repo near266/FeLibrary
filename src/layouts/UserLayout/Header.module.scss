@@ -106,6 +106,26 @@
                     }
                 }
             }
+
+            .card {
+                position: relative;
+
+                p {
+                    position: absolute;
+                    display: inline-block;
+                    background: #da3f3f;
+                    border-radius: 999px;
+                    width: 20px;
+                    height: 20px;
+                    line-height: 20px;
+                    color: #fff;
+                    font-size: 12px;
+                    top: -5px;
+                    right: 10px;
+                    text-align: center;
+                    border: none;
+                }
+            }
         }
     }
 }

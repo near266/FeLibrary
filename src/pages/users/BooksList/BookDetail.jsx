@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { selectBookById } from '../../../features/booksSlice';
 import { fetchBooks } from '../../../features/booksSlice';
 import { AuthContext } from "../../../contexts/AuthContex";
+import { addBookToCard } from '../../../features/borrowerCardSlice';
 
 const cx = classNames.bind(styles);
 
@@ -44,7 +45,7 @@ export const BookDetail = () => {
     }
     /*if (token && user && user.role === "user") {
       const phoneNumber = user.phoneNumber;
-      dispatch(addBookToCard(phoneNumber, bookId, count));
+      dispatch(addBookToCard(phoneNumber, id, count));
       toast.success("Sản phẩm đã được thêm vào giỏ hàng của bạn");
     } else {
       navigateTo("/login");
@@ -52,7 +53,12 @@ export const BookDetail = () => {
     }*/
     //const phoneNumber = '0123456789'
     //dispatch(bookAdded(phoneNumber, bookId, count))
-    console.log('thêm giỏ thành công')
+    else {
+      const phoneNumber = '0123456789'
+      dispatch(addBookToCard({ phoneNumber: phoneNumber, bookId: id, count: count }))
+      toast.success("Đã thêm sách vào thẻ đọc")
+      console.log('thêm giỏ thành công')
+    }
   };
 
   if (!book) {

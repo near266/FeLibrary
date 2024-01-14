@@ -60,8 +60,8 @@ const BooksList = () => {
         setSelectedCategory(event.target.value);
     };
 
-    const handleInputChange = (e) => {
-        setKeyword(e.target.value)
+    const handleInputChange = (keyword) => {
+        console.log(keyword)
     }
 
     function handleSearch(e) {
@@ -106,7 +106,7 @@ const BooksList = () => {
                     type="text"
                     className={cx('search-input')}
                     placeholder="Tìm kiếm theo tên sách hoặc tác giả"
-                    onChange={handleInputChange()}
+                    onChange={e => setKeyword(e.target.value)}
                 />
                 <button className={cx('search-button')} onClick={handleSearch}>Tìm Kiếm</button>
             </div>

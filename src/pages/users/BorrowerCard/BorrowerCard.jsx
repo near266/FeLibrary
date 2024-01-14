@@ -2,22 +2,26 @@ import classNames from "classnames/bind";
 import styles from "./BorrowerCard.module.scss"
 import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBorrowerCard } from "../../../features/borrowerCardSlice";
+import { fetchBorrowerCard, upBookQuantity, downBookQuantity, deleteBook } from "../../../features/borrowerCardSlice";
 import ModalBorrowerSlip from "./ModalBorrowerSlip"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { toast, ToastContainer } from 'react-toastify';
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { getBookById } from "../../../services/user/getBookById";
 import { AuthContext } from "../../../contexts/AuthContex";
 
 const cx = classNames.bind(styles);
 
 const BorrowerCard = () => {
-    const { user, token } = useContext(AuthContext)
+    //const { user, token } = useContext(AuthContext)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const listBook = useSelector((state) => state.borrowerCard.listBook)
     const total = useSelector((state) => state.borrowerCard.count)
 
     const [showModal, setShowModal] = useState(false)
-    let phoneNumber = ""
+    let phoneNumber = "0123456789"
     if (1) {
         //phoneNumber = user.phoneNumber;
         useEffect(() => {
@@ -25,22 +29,29 @@ const BorrowerCard = () => {
         }, [])
     }
 
-    const handleOnSubmit = (phoneNumber, bookId) => {
-        dispatch(deleteBookAction(phoneNumber, productId));
+    const handleDeleteBook = (phoneNumber, bookId, quantity) => {
+        dispatch(deleteBook({ phoneNumber: phoneNumber, bookId: bookId, quantity: quantity }));
     };
 
     const handleUpQuantity = async (phoneNumber, bookId, quantity) => {
-        const res = await getOneBook(bookId);
-        const quantityAvail = res.data[0].quantity;
-        if (quantity < quantityAvail) dispatch(upBookAction(phoneNumber, bookId, quantity));
+        const book = await getBookById(bookId);
+        const quantityAvail = 10; //book.quantityAvailabel
+        if (quantity < quantityAvail) dispatch(upBookQuantity({ phoneNumber: phoneNumber, bookId: bookId, quantity: quantity + 1 }));
+        else toast.error("Không còn đủ sách")
     };
 
     const handleDownQuantity = (phoneNumber, bookId, quantity) => {
-        dispatch(downBookAction(phoneNumber, bookId, quantity));
+        if (quantity > 1) {
+            dispatch(downBookQuantity({ phoneNumber: phoneNumber, bookId: bookId, quantity: quantity - 1 }));
+        }
     };
 
     const handleShowModal = () => {
-        setShowModal(true);
+        if (total <= 5) {
+            setShowModal(true);
+        } else {
+            toast.error("Không được mượn nhiều hơn 5 quyển")
+        }
     };
 
     const handleOnclickEmpty = () => {
@@ -49,15 +60,15 @@ const BorrowerCard = () => {
 
     return (
         <div className={cx("wrapper")}>
-            <h1>Thẻ đọc</h1>
+            <h2>Thẻ đọc</h2>
             {/*{listBook.length > 0 && token ? (*/}
             {listBook.length > 0 && 1 ? (
                 <div>
                     <div className={cx('cardListBook')}>
                         {listBook.map((book, index) => (
                             <div key={book.name} className={cx("book")}>
-                                <span onClick={() => handleOnSubmit(phoneNumber, book.bookId, book.quantity)}>x</span>
-                                <img src={book.cover} alt="#" />
+                                <span onClick={() => handleDeleteBook(phoneNumber, book.bookId, book.quantity)}><FontAwesomeIcon icon={faClose} style={{ color: 'red', cursor: "pointer" }}></FontAwesomeIcon></span>
+                                <img src={book.coverImg} alt="#" />
                                 <h4 className={cx('title')}>
                                     {book.name}
                                 </h4>
@@ -75,7 +86,7 @@ const BorrowerCard = () => {
                     </div>
                     <div className={cx('submit')}>
                         <p>
-                            Tổng số sách trong thẻ đọc <span>{total}</span>
+                            Tổng số sách trong thẻ đọc: <span>{total}</span>
                         </p>
                         <button onClick={handleShowModal}>Mượn sách</button>
                     </div>
@@ -90,7 +101,7 @@ const BorrowerCard = () => {
                     <button onClick={() => handleOnclickEmpty()}>Quay lại trang chủ</button>
                 </div>
             )}
-            <ModalBorrowerSlip show={showModal} handleClose={() => setShowModal(false)} cartItems={listBook} total={total} user={user} />
+            <ModalBorrowerSlip show={showModal} handleClose={() => setShowModal(false)} cardListBook={listBook} total={total} />
         </div>
     )
 }

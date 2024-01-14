@@ -29,7 +29,44 @@ export const addBookToCard = createAsyncThunk(
         const response = await fetch("https://jsonplaceholder.typicode.com/posts");
         const data = await response.json();
         //return data;
+        console.log({ phoneNumber, bookId, quantity })
         return fakeData
+    }
+);
+
+export const upBookQuantity = createAsyncThunk(
+    'borrowerCard/upBookQuantity',
+    async ({ phoneNumber, bookId, quantity }) => {
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+            quantity
+        });
+        //return data; 
+        return { phoneNumber, bookId, quantity };
+    }
+);
+
+export const downBookQuantity = createAsyncThunk(
+    'borrowerCard/downBookQuantity',
+    async ({ phoneNumber, bookId, quantity }) => {
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+            quantity
+        });
+        //return data;
+        return { phoneNumber, bookId, quantity };
+    }
+);
+
+export const deleteBook = createAsyncThunk(
+    'borrowerCard/deleteBookAction',
+    async ({ phoneNumber, bookId, quantity }) => {
+        try {
+            const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+            console.log('thunk delete')
+        } catch (error) {
+            console.error('Error deleting book:', error);
+            throw error;
+        }
+        return { phoneNumber, bookId, quantity };
     }
 );
 
@@ -40,10 +77,36 @@ const borrowerCardSlice = createSlice({
     extraReducers(builder) {
         builder
             .addCase(fetchBorrowerCard.fulfilled, (state, action) => {
-                state.data = action.payload;
+                state.listBook = action.payload.listBook;
+                state.count = action.payload.count;
             })
             .addCase(addBookToCard.fulfilled, (state, action) => {
-                state.data = action.payload;
+                state.listBook = action.payload.listBook;
+                state.count = action.payload.count;
+                console.log("thêm vào giỏ hàng thành công")
+            })
+            .addCase(upBookQuantity.fulfilled, (state, action) => {
+                // Cập nhật state khi tăng giảm số lượng thành công
+                const updateQuantity = action.payload.quantity;
+                const index = state.listBook.findIndex(book => book.bookId === action.payload.bookId);
+                if (index !== -1) {
+                    state.listBook[index].quantity = updateQuantity;
+                    state.count += 1;
+                }
+            })
+            .addCase(downBookQuantity.fulfilled, (state, action) => {
+                // Cập nhật state khi tăng giảm số lượng thành công
+                const updateQuantity = action.payload.quantity;
+                const index = state.listBook.findIndex(book => book.bookId === action.payload.bookId);
+                if (index !== -1) {
+                    state.listBook[index].quantity = updateQuantity;
+                    state.count -= 1;
+                }
+            })
+            .addCase(deleteBook.fulfilled, (state, action) => {
+                const deletedBookId = action.payload.bookId;
+                state.listBook = state.listBook.filter(book => book.bookId !== deletedBookId);
+                state.count -= action.payload.quantity; // Giảm tổng số sách đi 1
             });
     }
 });

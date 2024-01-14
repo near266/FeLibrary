@@ -6,7 +6,7 @@ import WarehouseIcon from '@mui/icons-material/Warehouse';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { HomeIcon, ClientIcon, StatsIcon, SalesCounterIcon, SearchIcon, BookIcon, SlipIcon, EventIcon } from '../../../components/Icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleLeft, faAngleRight, faPaintBrush } from '@fortawesome/free-solid-svg-icons';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -22,6 +22,7 @@ function Sidebar({ setToggleButton }) {
         showDetailSlip: false,
         showDetailEvent: false,
         showDetailStats: false,
+        showDetailHandmadeItem: false,
     });
 
     const [active, setActive] = useState({
@@ -32,6 +33,7 @@ function Sidebar({ setToggleButton }) {
         listOffSlip: false,
         listEvent: false,
         statisticSale: false,
+        handmadeItem: false
     });
     const [toggle, setToggle] = useState({
         action: false,
@@ -55,6 +57,7 @@ function Sidebar({ setToggleButton }) {
             listOffSlip: false,
             listEvent: false,
             statisticSale: false,
+            handmadeItem: false,
             [detailName]: true,
         }));
     };
@@ -268,6 +271,49 @@ function Sidebar({ setToggleButton }) {
                                     >
                                         <div className={cx('menuItemTitle')}>
                                             <span>Danh sách sự kiện</span>
+                                        </div>
+                                    </Link>
+                                </div>
+                            )}
+
+                            {/* Tiệm hand*/}
+                            <div
+                                className={cx('homeMenuItem', 'itemNav', {
+                                    active: active.handmadeItem
+                                })}
+                                onClick={() => handleShowDetail('showDetailHandmadeItem')}
+                            >
+                                <div className={cx('wrapIconItem')}>
+                                    <FontAwesomeIcon icon={faPaintBrush} />
+                                </div>
+                                {!toggle.action && (
+                                    <>
+                                        <div className={cx('menuItemTitle')}>
+                                            <span>Quản lý tiệm hand</span>
+                                        </div>
+                                        <div>
+                                            <FontAwesomeIcon
+                                                className={cx('iconArrowRight', {
+                                                    activeIcon: details.showDetailHandmadeItem,
+                                                })}
+                                                icon={faAngleRight}
+                                            />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                            {/* Chi tiết trong thống kê */}
+                            {!toggle.action && (
+                                <div
+                                    className={cx('wrapCollapseItem', { showCollapseItem: details.showDetailHandmadeItem })}
+                                >
+                                    <Link
+                                        to="/admin/handmade"
+                                        className={cx('homeMenuItem', 'itemNav', 'innerWrapCollapseItem')}
+                                        onClick={() => handleActive('handmadeItem')}
+                                    >
+                                        <div className={cx('menuItemTitle')}>
+                                            <span>Sản phẩm</span>
                                         </div>
                                     </Link>
                                 </div>

@@ -7,9 +7,11 @@ import { Button } from "@mui/material";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import { IoLibrary } from "react-icons/io5";
 import { AuthContext } from "../../contexts/AuthContex";
+import { useSelector } from "react-redux";
 const cx = classNames.bind(styles);
 function Header() {
   const { token, user } = useContext(AuthContext);
+  const listBook = useSelector((state) => state.borrowerCard.listBook)
 
   return (
     <div className={cx("wrapper")}>
@@ -80,21 +82,13 @@ function Header() {
               </ul>
             )}
           </div>
-          <div>
+          <div className={cx('card')}>
             <Button>
-              <LibraryBooksIcon />
+              <Link to='/borrowerCard'>
+                <LibraryBooksIcon />
+              </Link>
             </Button>
-            {token ? (
-              <div>
-                <ul style={{ width: "150px" }}>
-                  <li>
-                    <Link to={"/borrowerCard"}>Thẻ đọc</Link>
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <div></div>
-            )}
+            {token && listBook.length > 0 ? <p>{listBook.length}</p> : null}
           </div>
         </div>
       </div>
