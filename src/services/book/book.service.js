@@ -70,6 +70,7 @@ const UpdateBook = async (id, name, title, img, author, isbn, publisher, quantit
 
         const formData = new FormData();
         formData.append('id', id);
+        formData.append('name', name);
 
         formData.append('title', title);
         formData.append('img', img);
