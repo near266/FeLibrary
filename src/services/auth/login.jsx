@@ -1,11 +1,11 @@
-import request from '../../utils/httpRequest';
+// import request from '../../utils/httpRequest';
 
-export const login = async ({ phoneNumber, password }) => {
-    try {
-        const res = await request.post('auth/login', { phoneNumber, password });
+// export const login = async ({ phonenumber, password }) => {
+//     try {
+//         const res = await request.post('auth/login', { phonenumber, password });
 
-        return res.data;
-    } catch (err) {
-        console.log(err);
-    }
-};
+//         return res.data;
+//     } catch (err) {
+//         console.log(err);
+//     }
+// };

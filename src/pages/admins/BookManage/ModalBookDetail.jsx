@@ -5,7 +5,7 @@ const ModalBookDetail = ({ book }) => {
     return (
         <div className="book-container">
             <div className="book-info">
-                <p className="book-field"><strong>Mã sách:</strong> {book.bookId}</p>
+                <p className="book-field"><strong>Mã sách:</strong> {book.id}</p>
                 <p className="book-field"><strong>Tên:</strong> {book.name}</p>
                 <p className="book-field"><strong>Thể loại:</strong> {book.categoryName}</p>
                 <p className="book-field"><strong>Tác giả:</strong> {book.author}</p>
@@ -15,7 +15,7 @@ const ModalBookDetail = ({ book }) => {
             </div>
             <div className="book-details">
                 <div className="book-item">
-                    <img src={book.coverImg} alt={book.name} className="book-image" />
+                    <img src={book.img} alt={book.img} className="book-image" />
                 </div>
             </div>
         </div>

@@ -9,7 +9,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { getBookById } from "../../../services/user/getBookById";
-import { AuthContext } from "../../../contexts/AuthContex";
 
 const cx = classNames.bind(styles);
 

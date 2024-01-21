@@ -10,6 +10,8 @@ const routes = {
     borrowerCard: '/borrowerCard',
     forbiden403: '/403',
     notfound404user: '/*',
+    logout:'/logout',
+
 
 
 

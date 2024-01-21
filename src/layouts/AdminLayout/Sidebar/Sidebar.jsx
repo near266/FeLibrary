@@ -10,13 +10,13 @@ import { faAngleLeft, faAngleRight, faPaintBrush } from '@fortawesome/free-solid
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../../contexts/AuthContex';
+// import { AuthContext } from '../../../contexts/AuthContex';
 import routes from '../../../config/routes';
 
 const cx = classNames.bind(styles);
 
 function Sidebar({ setToggleButton }) {
-    const { handleLoggedOut, user } = useContext(AuthContext);
+    //const { handleLoggedOut, user } = useContext(AuthContext);
     const [details, setDetails] = useState({
         showDetailBook: false,
         showDetailSlip: false,
@@ -365,7 +365,7 @@ function Sidebar({ setToggleButton }) {
 
                             <hr className={cx('menuDivider')}></hr>
 
-                            <Link to="/login" className={cx('homeMenuItem', 'itemNav')} onClick={handleLoggedOut}>
+                            <Link to="/login" className={cx('homeMenuItem', 'itemNav')}>
                                 <div className={cx('wrapIconItem')}>
                                     <LogoutIcon />
                                 </div>

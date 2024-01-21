@@ -11,53 +11,35 @@ import * as Yup from "yup";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { addNewBook } from "../../../features/booksSlice";
+import { AddBook } from "../../../features/BookSilce";
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
-const fakeCate = [
-    {
-        categoryId: 1,
-        categoryName: 'Nguyễn Ngọc Ánh',
-    },
-    {
-        categoryId: 2,
-        categoryName: 'Kinh dị',
-    },
-    {
-        categoryId: 3,
-        categoryName: 'Lãng mạn',
-    },
-    {
-        categoryId: 4,
-        categoryName: 'Tiểu sử - hồi ký',
-    },
-    {
-        categoryId: 5,
-        categoryName: 'Tản văn',
-    },
-]
+
 
 const AddBookForm = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch()
+    const [img1, setImg] = useState();
     const formik = useFormik({
         initialValues: {
-            bookId: "",
+            isbn: "",
             name: "",
             author: "",
-            categoryName: "",
+            Cateid: "",
             publisher: "",
-            coverImg: "",
+            img: '',
             quantityTotal: 1,
             quantityAvailabel: 0,
         },
 
         validationSchema: Yup.object({
-            bookId: Yup.string().required("Bạn chưa thêm mã sách!"),
+            isbn: Yup.string().required("Bạn chưa thêm mã sách!"),
             name: Yup.string().required("Bạn chưa điền tên sách!"),
             author: Yup.string().required("Bạn chưa nhập giá cho sản phẩm"),
             publisher: Yup.string().required("Hãy thêm nhà xuất bản!"),
-            categoryName: Yup.string().required("Bạn chưa thêm danh mục cho sản phẩm"),
-            coverImg: Yup.string().required("Bạn chưa thêm ảnh bìa cho sách"),
+            Cateid: Yup.string().required("Bạn chưa thêm danh mục cho sản phẩm"),
+            img: Yup.string().required("Bạn chưa thêm ảnh bìa cho sách"),
             quantityTotal: Yup.number().integer("Số lượng phải là số nguyên").min(1, "Tổng sách không nhỏ hơn 1").required("Nhập tổng số lượng sách"),
             quantityAvailabel: Yup.number().integer("Số lượng phải là số nguyên").min(0, "Số lượng không âm").required("Nhập số lượng sách sẵn có")
                 .test('is-less-or-equal', 'Số lượng sẵn có phải nhỏ hơn hoặc bằng tổng số lượng', function (value) {
@@ -67,7 +49,11 @@ const AddBookForm = () => {
         }),
 
         onSubmit: (values) => {
-            dispatch(addNewBook(values))
+
+
+            values.img = img1;
+
+            handleAdd(values)
         }
     });
 
@@ -83,21 +69,41 @@ const AddBookForm = () => {
         setShowCancelModal(false);
         navigate("/admin/books");
     };
+    const handleAdd = async (formValue) => {
+        const { name, title, img, author, isbn, publisher, quantityTotal, quantityAvailabel, Cateid } = formValue;
 
+        dispatch(AddBook({ name, title, img, author, isbn, publisher, quantityTotal, quantityAvailabel, Cateid }))
+            .unwrap()
+            .then((response) => {
+                toast.success("Đăng kí thành công!!", { autoClose: 20000 });
+            })
+            .catch(() => {
+                console.log("loi")
+                toast.success("Đăng kí thành công!!", { autoClose: 2000 });
+                setTimeout(() => {
+
+                    navigate("/admin/books");
+                }, 2200)
+            });
+
+    };
     useEffect(() => {
-        //get all category
-        async function getAllCategory() {
+        const fetchCate = async () => {
             try {
-                const data = await getCategories();
-                //console.log(data);
-                setCategories(data);
+
+                const response = await axios.get("http://localhost:8085/api/v1/category/getcateName");
+
+
+                setCategories(response.data);
+
             } catch (error) {
-                console.error("Error fetching product by id:", error);
+                console.log('Error:', error);
             }
-        }
-        getAllCategory();
-        setCategories(fakeCate)
-    }, []);
+        };
+
+        fetchCate();
+
+    }, [])
 
     return (
         <div className={cx("container")}>
@@ -118,8 +124,8 @@ const AddBookForm = () => {
                             <label htmlFor="name" className={cx("form-label")}>
                                 Mã sách<span> *</span>
                             </label>
-                            <input id="bookId" name="bookId" type="text" placeholder="Mã sách" value={formik.values.bookId} onChange={formik.handleChange} className={cx("form-control")} />
-                            {formik.errors.bookId && formik.touched.bookId && <span className={cx("form-message")}>{formik.errors.bookId}</span>}
+                            <input id="isbn" name="isbn" type="text" placeholder="Mã sách" value={formik.values.id} onChange={formik.handleChange} className={cx("form-control")} />
+                            {formik.errors.id && formik.touched.isbn && <span className={cx("form-message")}>{formik.errors.isbn}</span>}
                         </div>
                         <div className={cx("form-input")}>
                             <label htmlFor="name" className={cx("form-label")}>
@@ -145,21 +151,21 @@ const AddBookForm = () => {
                         </div>
 
                         <div className={cx("form-input")}>
-                            <label htmlFor="categoryName" className={cx("form-label")}>
+                            <label htmlFor="Cateid" className={cx("form-label")}>
                                 Thể loại:<span> * &nbsp;</span>
                             </label>
-                            <select id={cx("categoryName")} name="categoryName" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.categoryName || ""}>
+                            <select id={cx("Cateid")} name="Cateid" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.Cateid || ""}>
                                 <option>Chọn thể loại</option>
                                 {categories.map((category) => (
-                                    <option key={category.categoryName} value={category.categoryName}>
-                                        {category.categoryName}
+                                    <option key={category.id} value={category.id}>
+                                        {category.name}
                                     </option>
                                 ))}
                             </select>
-                            {formik.errors.categoryName && formik.touched.categoryName && (
+                            {formik.errors.Cateid && formik.touched.Cateid && (
                                 <span className={cx("form-message")}>
                                     <br></br>
-                                    {formik.errors.categoryName}
+                                    {formik.errors.Cateid}
                                 </span>
                             )}
                         </div>
@@ -181,18 +187,45 @@ const AddBookForm = () => {
 
                     <div className={cx("form-group")}>
                         <div className={cx("form-input")}>
-                            <label htmlFor="coverImg" className={cx("form-label")}>
+                            <label htmlFor="img" className={cx("form-label")}>
                                 Url ảnh bìa sách<span> *</span>
                             </label>
-                            <input id="coverImg" name="coverImg" type="text" placeholder="Nhập link ảnh sách" value={formik.values.coverImg} onChange={formik.handleChange} className={cx("form-control")} />
+                            <input
+                                id="img"
+                                name="img"
+                                type="file"
+                                accept="image/*"
+
+                                onChange={(event) => {
+                                    formik.setFieldValue("img", event.currentTarget.files[0]);
+                                    setImg(event.currentTarget.files[0])
+                                    // Hiển thị trước ảnh
+                                    const reader = new FileReader();
+                                    reader.onload = (e) => {
+                                        const imgArea = document.getElementById("imgArea");
+                                        // Xóa nội dung cũ
+                                        const img = document.createElement("img");
+                                        img.src = e.target.result;
+
+
+
+                                    };
+                                    reader.readAsDataURL(event.currentTarget.files[0]);
+                                }}
+                                className={cx("form-control")}
+                            />
+                            {/* <input id="img" name="img" type="file" placeholder="Nhập link ảnh sách" value={formik.values.img} onChange={formik.handleChange} className={cx("form-control")} /> */}
                             <div className={cx("imgArea")}>
                                 <p>Ảnh bìa sách</p>
-                                {formik.values.coverImg && (
+                                {formik.values.img && (
+                                    // <div>
+                                    //     <img src={formik.values.img}></img>
+                                    // </div>
                                     <div>
-                                        <img src={formik.values.coverImg}></img>
+                                        <img src={URL.createObjectURL(formik.values.img)} alt="Ảnh bìa sách" />
                                     </div>
                                 )}
-                                {formik.errors.coverImg && formik.touched.coverImg && <span className={cx("form-message")}>{formik.errors.coverImg}</span>}
+                                {formik.errors.img && formik.touched.img && <span className={cx("form-message")}>{formik.errors.img}</span>}
                             </div>
                         </div>
                         <div className={cx("btn")}>

@@ -11,39 +11,18 @@ import { Modal, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import ModalBookDetail from "./ModalBookDetail";
 import { fetchBooks, selectAllBooks, selectBookIds, selectBookById, searchBook, deleteBook } from "../../../features/booksSlice";
-
+import axios from 'axios';
 import { toast, ToastContainer } from "react-toastify";
+import { getAllBook } from "../../../features/BookSilce";
 
 const cx = classNames.bind(styles);
 
-const fakeCate = [
-    {
-        categoryId: 1,
-        categoryName: 'Nguyễn Ngọc Ánh',
-    },
-    {
-        categoryId: 2,
-        categoryName: 'Kinh dị',
-    },
-    {
-        categoryId: 3,
-        categoryName: 'Lãng mạn',
-    },
-    {
-        categoryId: 4,
-        categoryName: 'Tiểu sử - hồi ký',
-    },
-    {
-        categoryId: 5,
-        categoryName: 'Tản văn',
-    },
-]
 
 const BookList = () => {
     const columns = [
         {
-            name: "Mã sách",
-            selector: (row) => row.bookId,
+            name: "Mã",
+            selector: (row) => row.isbn,
             sortable: true,
             color: "#007bff",
             width: '7%'
@@ -80,13 +59,13 @@ const BookList = () => {
         },
         {
             name: "Ảnh",
-            cell: (row) => <img src={row.coverImg} alt={row.coverImg} className={cx("image-cell")} />,
+            cell: (row) => <img src={row.img} alt={row.img} className={cx("image-cell")} />,
             width: '13%'
         },
         {
             name: "",
             cell: (row) => (<div className={cx('editIcon')}>
-                <Link to={`/admin/editBook/${row.bookId}`}>
+                <Link to={`/admin/editBook/${row.id}`}>
                     <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} />
                 </Link>
             </div>),
@@ -100,7 +79,7 @@ const BookList = () => {
         },
     ];
 
-    const books = useSelector(selectAllBooks)
+
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -111,8 +90,38 @@ const BookList = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [keyword, setKeyword] = useState('')
     const [showModal, setShowModal] = useState(false);
+    const [books, setOriginalProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchUserName = async () => {
+            try {
+
+                const response = await axios.get("http://localhost:8085/api/v1/category/getcateName");
 
 
+                setCategories(response.data);
+
+            } catch (error) {
+                console.log('Error:', error);
+            }
+        };
+
+        fetchUserName();
+
+    }, [])
+
+    useEffect(() => {
+
+        dispatch(getAllBook({}))
+            .unwrap()
+            .then((response) => {
+                setOriginalProducts(response)
+
+            })
+            .catch(() => {
+                console.log("loi")
+            })
+    }, [dispatch])
     const handleCloseDeleteModal = () => setShowDeleteModal(false);
     const confirmDelete = (book) => {
         setSelectedRow(book)
@@ -124,16 +133,7 @@ const BookList = () => {
     };
     //const navigate = useNavigate()
 
-    useEffect(() => {
-        async function getAllCategory() {
-            const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-            const data = await response.json();
-            //console.log(data);
-        }
-        getAllCategory();
-        setCategories(fakeCate)
 
-    }, [])
 
     useEffect(() => {
         dispatch(fetchBooks())
@@ -153,17 +153,20 @@ const BookList = () => {
         console.log(e)
     };
 
-    const handleDelete = () => {
-        dispatch(deleteBook(selectedRow.bookId))
-        //console.log("xóa")
-        toast.success('Xóa sách thành công')
+    const handleDelete = async () => {
+
+        const response = await axios.post(`http://localhost:8085/api/v1/book/deleteBook?id=` + selectedRow.id);
+        toast.success('Xóa sách thành công', { autoClose: 2000 })
+
+        setTimeout(() => {
+
+            window.location.reload();
+        }, 2100)
         setShowDeleteModal(false)
-        console.log('BOOK', books)
+
+        return () => { controller }
     }
-    const handleEdit = (book) => {
-        console.log(book.bookId)
-        //navigate(`/admin/editBook'/{book.bookId}`)
-    }
+
 
     return (
         <div className={cx("wrap")}>
@@ -178,8 +181,8 @@ const BookList = () => {
                     <option value="">Tất cả loại</option>
                     {categories &&
                         categories.map((category) => (
-                            <option key={category.categoryId} value={category.categoryNameame}>
-                                {category.categoryName}
+                            <option key={category.name} value={category.name}>
+                                {category.name}
                             </option>
                         ))}
                 </select>

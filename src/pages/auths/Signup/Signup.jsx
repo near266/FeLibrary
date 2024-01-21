@@ -5,20 +5,21 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./Signup.module.scss";
-import { signup } from "/src/services/auth/signup";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-
+import { useDispatch } from "react-redux";
+import { register } from "../../../features/auth";
 const cx = classNames.bind(styles);
 
 export default function Signup() {
     const navigateTo = useNavigate();
+    const dispatch = useDispatch();
     const phoneRegExp = /^[0-9]{10,}$/;
 
     const formik = useFormik({
         initialValues: {
-            name: "",
-            phoneNumber: "",
+            fullname: "",
+            phonenumber: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -26,8 +27,8 @@ export default function Signup() {
             statusId: "1"
         },
         validationSchema: Yup.object({
-            name: Yup.string().max(45, "Tên quá dài!").required("Bạn chưa điền tên!"),
-            phoneNumber: Yup.string().matches(phoneRegExp, "Số điện thoại không hợp lệ").required("Bạn chưa nhập số điện thoại"),
+            fullname: Yup.string().max(45, "Tên quá dài!").required("Bạn chưa điền tên!"),
+            phonenumber: Yup.string().matches(phoneRegExp, "Số điện thoại không hợp lệ").required("Bạn chưa nhập số điện thoại"),
             email: Yup.string().email("Email không đúng").required("Bạn chưa điền email!"),
             password: Yup.string().min(6, "mật khẩu tối thiểu 6 kí tự").required("Bạn chưa nhập mật khẩu"),
             confirmPassword: Yup.string()
@@ -52,9 +53,28 @@ export default function Signup() {
                 toast("Lỗi trong quá trình đăng kí", { autoClose: 2000 });
             }
         },*/
-            values => console.log(values)
+            values => handleRegister(values)
     });
+ const handleRegister=(values)=>{
+const { fullname,phonenumber,email,password} =values;
+dispatch(register({ fullname,phonenumber,email,password}))
+.unwrap()
+.then(() => {
+  
+    // Đăng ký thành công
+    toast.success("Đăng kí thành công!!", { autoClose: 20000 });
 
+    // Chuyển hướng đến trang đăng nhập sau khi đăng ký thành công
+    navigateTo("/login");
+
+
+  window.location.reload();
+})
+.catch(() => {
+    toast("Lỗi trong quá trình đăng kí", { autoClose: 2000 });
+});
+
+ }
     return (
         <div className={cx("container")}>
             <div className={cx("heading")}>
@@ -70,19 +90,19 @@ export default function Signup() {
                 <div className="spacer"></div>
 
                 <div className={cx("form-group")}>
-                    <label htmlFor="name" className={cx("form-label")}>
+                    <label htmlFor="fullname" className={cx("form-label")}>
                         Họ và tên<span> *</span>
                     </label>
-                    <input id="name" name="name" type="text" placeholder="Họ và tên" value={formik.values.name} onChange={formik.handleChange} className={cx("form-control")} />
-                    {formik.errors.name && formik.touched.name && <span className={cx("form-message")}>{formik.errors.name}</span>}
+                    <input id="fullname" name="fullname" type="text" placeholder="Họ và tên" value={formik.values.fullname} onChange={formik.handleChange} className={cx("form-control")} />
+                    {formik.errors.fullname && formik.touched.fullname && <span className={cx("form-message")}>{formik.errors.fullname}</span>}
                 </div>
 
                 <div className={cx("form-group")}>
-                    <label htmlFor="phoneNumber" className={cx("form-label")}>
+                    <label htmlFor="phonenumber" className={cx("form-label")}>
                         Số điện thoại<span> *</span>
                     </label>
-                    <input id="phoneNumber" name="phoneNumber" type="text" placeholder="Số điện thoại" value={formik.values.phoneNumber} onChange={formik.handleChange} className={cx("form-control")} />
-                    {formik.errors.phoneNumber && formik.touched.phoneNumber && <span className={cx("form-message")}>{formik.errors.phoneNumber}</span>}
+                    <input id="phonenumber" name="phonenumber" type="text" placeholder="Số điện thoại" value={formik.values.phonenumber} onChange={formik.handleChange} className={cx("form-control")} />
+                    {formik.errors.phonenumber && formik.touched.phonenumber && <span className={cx("form-message")}>{formik.errors.phonenumber}</span>}
                 </div>
 
                 <div className={cx("form-group")}>

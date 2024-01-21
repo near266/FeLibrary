@@ -1,69 +1,70 @@
-import * as React from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 
-import classNames from "classnames/bind";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import styles from "./Login.module.scss";
+import * as Yup from "yup";
+import classNames from "classnames/bind";
+import { login } from "../../../features/auth";
+import { clearMessage } from "../../../features/message";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { login } from "/src/services/auth/login";
-import { AuthContext } from "../../../contexts/AuthContex";
+import { useFormik } from "formik";
 import { toast, ToastContainer } from "react-toastify";
-import { useDispatch } from "react-redux";
-//import { getListItem } from "../../../reactRedux/action/actions";
-import "react-toastify/dist/ReactToastify.css";
-
 const cx = classNames.bind(styles);
 
-export default function Login() {
+const Login = () => {
+    let navigate = useNavigate();
+
+
+
     const dispatch = useDispatch();
-    const { handleLoggedin } = React.useContext(AuthContext);
-    const navigateTo = useNavigate();
 
     const phoneRegExp = /^[0-9]{10,}$/;
     const formikForm = useFormik({
         initialValues: {
-            phoneNumber: "",
+            phonenumber: "",
             password: "",
         },
         validationSchema: Yup.object({
-            phoneNumber: Yup.string().matches(phoneRegExp, "Số điện thoại không hợp lệ").required("Bạn chưa nhập số điện thoại"),
+            phonenumber: Yup.string().matches(phoneRegExp, "Số điện thoại không hợp lệ").required("Bạn chưa nhập số điện thoại"),
             password: Yup.string().min(6, "mật khẩu tối thiểu 6 kí tự").required("Bạn chưa nhập mật khẩu"),
         }),
-        onSubmit: /*async (values) => {
-            try {
-                // Gọi hàm login từ service
-                const response = await login(values);
+        onSubmit:
+            values => {
+                handleLogin(values)
 
-                // Kiểm tra xem đăng nhập có thành công không
-                const role = response.user.role;
-                if (role && role.toLowerCase() === "user") {
-                    // Nếu thành công, chuyển hướng đến trang Home
-                    // const token = response
-                    // console.log(response);
-                    const token = response.token;
-                    const user = response.user;
-                    handleLoggedin(token, user);
-                    toast.success("Đăng nhập thành công");
-                    navigateTo("/");
-                    dispatch(getListItem(user.email));
-                } else {
-                    if (role && role.toLowerCase() === "admin") {
-                        const token = response.token;
-                        const user = response.user;
-                        handleLoggedin(token, user);
-                        toast.success("Đăng nhập thành công");
-                        navigateTo("/admin");
-                    } else {
-                        toast.error("Sai email hoặc mật khẩu");
-                    }
-                }
-            } catch (error) {
-                toast.error("Đăng nhập thất bại:", error);
             }
-        },*/
-            values => console.log(values)
     });
+    useEffect(() => {
+        dispatch(clearMessage());
+    }, [dispatch]);
+
+
+    const handleLogin = (formValue) => {
+        const { phonenumber, password } = formValue;
+
+        dispatch(login({ phonenumber, password }))
+            .unwrap()
+            .then(() => {
+                const userrole = localStorage.getItem("role");
+
+                if (userrole == '"ADMIN"') {
+                    navigate("/admin");
+                }
+                else {
+                    navigate("/books")
+                }
+
+                window.location.reload();
+            })
+            .catch(() => {
+                toast.error("Sai tài khoản hoặc mật khẩu!!", { autoClose: 2000 });
+            });
+    };
+
+
+
 
     return (
         <div className={cx("container")}>
@@ -80,11 +81,11 @@ export default function Login() {
                 <div className="spacer"></div>
 
                 <div className={cx("form-group")}>
-                    <label htmlFor="phoneNumber" className={cx("form-label")}>
+                    <label htmlFor="phonenumber" className={cx("form-label")}>
                         Số điện thoại<span> *</span>
                     </label>
-                    <input required id="phoneNumber" name="phoneNumber" type="text" placeholder="Số điện thoại" value={formikForm.values.phoneNumber} onChange={formikForm.handleChange} className={cx("form-control")} />
-                    {formikForm.errors.phoneNumber && formikForm.touched.phoneNumber && <span className={cx("form-message")}>{formikForm.errors.phoneNumber}</span>}
+                    <input required id="phonenumber" name="phonenumber" type="text" placeholder="Số điện thoại" value={formikForm.values.phonenumber} onChange={formikForm.handleChange} className={cx("form-control")} />
+                    {formikForm.errors.phonenumber && formikForm.touched.phonenumber && <span className={cx("form-message")}>{formikForm.errors.phonenumber}</span>}
                 </div>
 
                 <div className={cx("form-group")}>
@@ -101,4 +102,6 @@ export default function Login() {
             </form>
         </div>
     );
-}
+};
+
+export default Login;

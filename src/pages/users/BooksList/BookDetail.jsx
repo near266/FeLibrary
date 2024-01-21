@@ -9,21 +9,37 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { selectBookById } from '../../../features/booksSlice';
 import { fetchBooks } from '../../../features/booksSlice';
-import { AuthContext } from "../../../contexts/AuthContex";
 import { addBookToCard } from '../../../features/borrowerCardSlice';
-
+import { getDetailBook } from '../../../features/BookSilce';
+import axios from 'axios';
 const cx = classNames.bind(styles);
 
 export const BookDetail = () => {
   const { id } = useParams();
   const navigateTo = useNavigate();
   //const { token, user } = useContext(AuthContext);
+  const [book, setbookDetail] = useState([])
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchBooks())
-  }, [dispatch])
 
-  const book = useSelector(state => selectBookById(state, id))
+    const fetchData = async () => {
+      try {
+
+
+        const response = await axios.get(`http://localhost:8085/api/v1/book/getdetail?id=` + id);
+
+        setbookDetail(response.data);
+        return () => { controller }
+
+      } catch (error) {
+        console.log('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // const book = useSelector(state => selectBookById(state, id))
   console.log(1, book)
   //const book = { bookId: 'NNA001', categoryName: 'Nguyễn Ngọc Ánh', author: 'Nguyễn Ngọc Ánh', name: 'Tôi thấy hoa vàng trên cỏ xanh', quantityTotal: 7, quantityAvailabel: 5, publisher: 'Kim Đồng', coverImg: 'https://upload.wikimedia.org/wikipedia/vi/3/3d/T%C3%B4i_th%E1%BA%A5y_hoa_v%C3%A0ng_tr%C3%AAn_c%E1%BB%8F_xanh.jpg' }
 
@@ -43,16 +59,7 @@ export const BookDetail = () => {
     if (book.quantityAvailabel < 1) {
       toast.info('Đã hết sách, bạn vui lòng quay lại mượn sau !')
     }
-    /*if (token && user && user.role === "user") {
-      const phoneNumber = user.phoneNumber;
-      dispatch(addBookToCard(phoneNumber, id, count));
-      toast.success("Sản phẩm đã được thêm vào giỏ hàng của bạn");
-    } else {
-      navigateTo("/login");
-      toast.warn("Đăng nhập trước khi thêm vào giỏ hàng!!");
-    }*/
-    //const phoneNumber = '0123456789'
-    //dispatch(bookAdded(phoneNumber, bookId, count))
+
     else {
       const phoneNumber = '0123456789'
       dispatch(addBookToCard({ phoneNumber: phoneNumber, bookId: id, count: count }))
@@ -73,7 +80,7 @@ export const BookDetail = () => {
     <div className={cx('wrapper')}>
       <div className={cx('book-detail')}>
         <div className={cx('divLeft')}>
-          <img src={book.coverImg} alt="Bìa sách"></img>
+          <img src={book.img} alt="Bìa sách"></img>
         </div>
         <div className={cx('divRight')}>
           <h3 className={cx("name")}>{book.name}</h3>

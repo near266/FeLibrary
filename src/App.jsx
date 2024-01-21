@@ -5,12 +5,12 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { userRoutes, adminRoutes } from "../src/routes"
 import DefaultLayoutAdmin from './layouts/AdminLayout/DefaultLayout/DefaultLayout'
 import DefaultLayoutUser from './layouts/UserLayout/DefaultLayOutUser';
-import { AuthContext } from './contexts/AuthContex'
+// import { AuthContext } from './contexts/AuthContex'
 import { ToastContainer } from "react-toastify";
 
 function App() {
-    const { token, user } = useContext(AuthContext);
-    const tokenLocal = localStorage.getItem("token");
+    // const { token, user } = useContext(AuthContext);
+    const tokenLocal = localStorage.getItem("user");
     const role = localStorage.getItem("role");
 
     return (

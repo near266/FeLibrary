@@ -1,18 +1,44 @@
 import classNames from "classnames/bind";
 import styles from "./Header.module.scss";
-import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import PersonIcon from "@mui/icons-material/Person";
 import { Button } from "@mui/material";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import { IoLibrary } from "react-icons/io5";
-import { AuthContext } from "../../contexts/AuthContex";
-import { useSelector } from "react-redux";
+// import { AuthContext } from "../../contexts/AuthContex";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../features/auth";
+import { useEffect } from "react";
+import axios from 'axios';
+
 const cx = classNames.bind(styles);
 function Header() {
-  const { token, user } = useContext(AuthContext);
-  const listBook = useSelector((state) => state.borrowerCard.listBook)
 
+  // const { token, user } = useContext(AuthContext);
+  const listBook = useSelector((state) => state.borrowerCard.listBook)
+  const us = JSON.parse(localStorage.getItem("user"))
+  // const dispatch = useDispatch();
+  const [name, setName] = useState([])
+  useEffect(() => {
+    const fetchUserName = async () => {
+      try {
+        const response = await axios.get("http://localhost:8085/api/v1/category/getcateName");
+        // Assuming response.data contains the user's name
+
+        setName(response.data);
+      } catch (error) {
+        console.log('Error:', error);
+      }
+    };
+
+    fetchUserName();
+  }, []);
+  let navigate = useNavigate()
+  const Logout = () => {
+    // dispatch(logout())
+    console.log('aa ')
+  }
   return (
     <div className={cx("wrapper")}>
       <div className={cx("box")}>
@@ -51,7 +77,7 @@ function Header() {
             <Link to="/handmadeItems">TIỆM HAND</Link>
           </div>
           <div className={cx("category-item")}>
-            <Link to="/event">SỰ KIỆN</Link>
+            <Link to="/event">SỰ KIỆN  </Link>
           </div>
           <div className={cx("category-item")}>
             <Link to="/address">ĐỊA CHỈ</Link>
@@ -62,13 +88,19 @@ function Header() {
             <Button>
               <PersonIcon />
             </Button>
-            {token ? (
+            {us ? (
               <ul style={{ width: "150px" }}>
                 <li>
                   <Link to={"/"}>Lịch sử đọc</Link>
                 </li>
                 <li>
-                  <Link to={"/logout"}>Đăng xuất</Link>
+                  <Link to={"/"} onClick={() => {
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("role")
+
+
+                  }}>Đăng xuất</Link>
+                  {/* <Link to={"/login"}>Đăng xuất</Link> */}
                 </li>
               </ul>
             ) : (
@@ -88,7 +120,7 @@ function Header() {
                 <LibraryBooksIcon />
               </Link>
             </Button>
-            {token && listBook.length > 0 ? <p>{listBook.length}</p> : null}
+            {/* {token && listBook.length > 0 ? <p>{listBook.length}</p> : null} */}
           </div>
         </div>
       </div>
