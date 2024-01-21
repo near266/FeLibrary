@@ -21,6 +21,8 @@ const login = (phonenumber, password) => {
       if (response.data.access_token) {
         localStorage.setItem("user", JSON.stringify(response.data));
         localStorage.setItem("role", JSON.stringify(response.data.role))
+        localStorage.setItem("userId", JSON.stringify(response.data.userId))
+
       }
 
       return response.data;
@@ -30,6 +32,8 @@ const login = (phonenumber, password) => {
 const logout = () => {
   localStorage.removeItem("user");
   localStorage.removeItem("role");
+  localStorage.removeItem("userId");
+
 };
 
 const authService = {

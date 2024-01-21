@@ -3,12 +3,8 @@ import authHeader from "../auth/auth-header";
 const user = JSON.parse(localStorage.getItem('user'));
 const user1 = localStorage.getItem('user');
 const API_URL = "http://localhost:8085/api/v1/book/";
+const CardUrl = "http://localhost:8085/api/v1/Cart/"
 
-const instance = axios.create({
-    baseURL: API_URL,
-    timeout: 1000,
-    headers: { 'Authorization': 'Bearer ' + user.access_token }
-});
 
 
 const getAllbook = () => {
@@ -19,7 +15,19 @@ const getAllbook = () => {
 
     );
 }
+const BorrowBook = async (bookid, quantity) => {
+    try {
+        const formData = new FormData();
+        formData.append('bookid', bookid);
+        formData.append('quantity', quantity);
+        const res = await axios.post(CardUrl + "AddCardBorrwer", formData);
 
+        return res.data;
+    }
+    catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
 const getBookId = async (id) => {
     try {
         const res = await axios.get(API_URL + `getdetail?id=${id}`);
@@ -87,7 +95,8 @@ const bookService = {
     getAllbook,
     getBookId,
     AddBook,
-    UpdateBook
+    UpdateBook,
+    BorrowBook
 };
 
 export default bookService;

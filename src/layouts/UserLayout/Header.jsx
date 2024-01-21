@@ -97,6 +97,8 @@ function Header() {
                   <Link to={"/"} onClick={() => {
                     localStorage.removeItem("user");
                     localStorage.removeItem("role")
+                    localStorage.removeItem("userId")
+                    window.location.reload()
 
 
                   }}>Đăng xuất</Link>

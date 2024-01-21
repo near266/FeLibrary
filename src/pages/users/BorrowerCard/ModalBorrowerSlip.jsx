@@ -178,9 +178,9 @@ const ModalBorrowerSlip = ({ show, handleClose, cardListBook, total }) => {
 
                                 {cardListBook.map((book) => (
                                     <div key={book.bookId} className={cx("item")}>
-                                        <img src={book.coverImg} alt={book.name} className={cx("b-image")} />
+                                        <img src={book.img} alt={book.name} className={cx("b-image")} />
                                         <p className={cx("item-field")}>Tên sách: {book.name}</p>
-                                        <p className={cx("item-field")}>Số lượng: {book.quantity}</p>
+                                        <p className={cx("item-field")}>Số lượng: {book.quantityTotal}</p>
                                     </div>
                                 ))}
                             </div>

@@ -80,6 +80,25 @@ export const updateBook = createAsyncThunk("book/update",
         }
     }
 )
+export const BorrowBook = createAsyncThunk("book/borrow",
+    async ({ bookid, quantity }, thunkAPI) => {
+        try {
+
+            const response = await bookService.BorrowBook(bookid, quantity);
+            thunkAPI.dispatch(setMessage(response.data.message));
+            return response.data
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            thunkAPI.dispatch(setMessage(message));
+            return thunkAPI.rejectWithValue();
+        }
+    }
+)
 const initialState = {
 
     addbooks: []
@@ -114,6 +133,9 @@ const bookSlice = createSlice({
             .addCase(updateBook.fulfilled, (state, action) => {
                 const update = action.payload;
                 console.log(update)
+            })
+            .addCase(BorrowBook.fulfilled, (state, action) => {
+                const check = action.payload
             })
             ;
     },

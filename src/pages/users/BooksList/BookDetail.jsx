@@ -10,13 +10,15 @@ import { useEffect, useState } from 'react';
 import { selectBookById } from '../../../features/booksSlice';
 import { fetchBooks } from '../../../features/booksSlice';
 import { addBookToCard } from '../../../features/borrowerCardSlice';
-import { getDetailBook } from '../../../features/BookSilce';
+import { BorrowBook, getDetailBook } from '../../../features/BookSilce';
 import axios from 'axios';
 const cx = classNames.bind(styles);
 
 export const BookDetail = () => {
   const { id } = useParams();
   const navigateTo = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
+
   //const { token, user } = useContext(AuthContext);
   const [book, setbookDetail] = useState([])
   const dispatch = useDispatch();
@@ -40,7 +42,7 @@ export const BookDetail = () => {
   }, []);
 
   // const book = useSelector(state => selectBookById(state, id))
-  console.log(1, book)
+  console.log(user.userId)
   //const book = { bookId: 'NNA001', categoryName: 'Nguyễn Ngọc Ánh', author: 'Nguyễn Ngọc Ánh', name: 'Tôi thấy hoa vàng trên cỏ xanh', quantityTotal: 7, quantityAvailabel: 5, publisher: 'Kim Đồng', coverImg: 'https://upload.wikimedia.org/wikipedia/vi/3/3d/T%C3%B4i_th%E1%BA%A5y_hoa_v%C3%A0ng_tr%C3%AAn_c%E1%BB%8F_xanh.jpg' }
 
   const [count, setCount] = useState(1);
@@ -54,17 +56,22 @@ export const BookDetail = () => {
     }
   };
 
-  const handleAddToCard = () => {
+  const handleAddToCard = async () => {
 
     if (book.quantityAvailabel < 1) {
       toast.info('Đã hết sách, bạn vui lòng quay lại mượn sau !')
     }
 
     else {
-      const phoneNumber = '0123456789'
-      dispatch(addBookToCard({ phoneNumber: phoneNumber, bookId: id, count: count }))
+      const formData = new FormData();
+      formData.append("userId", user.userId)
+      formData.append('bookid', id);
+      formData.append('quantity', count);
+      const res = await axios.post("http://localhost:8085/api/v1/Cart/AddCardBorrwer", formData)
+
+      //  dispatch(BorrowBook({ bookid: id, quantity: count }))
       toast.success("Đã thêm sách vào thẻ đọc")
-      console.log('thêm giỏ thành công')
+      console.log(formData)
     }
   };
 
